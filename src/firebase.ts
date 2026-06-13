@@ -17,7 +17,7 @@ const getFirebaseConfig = () => {
   }
 
   // 預設從環境變數讀取
-  return {
+  const envConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
     projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
@@ -26,6 +26,20 @@ const getFirebaseConfig = () => {
     appId: import.meta.env.VITE_FIREBASE_APP_ID,
     measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
   };
+
+  // 如果環境變數中沒有 apiKey (例如剛下載專案，尚未建立 .env 檔案)，使用虛擬設定防止初始化崩潰
+  if (!envConfig.apiKey) {
+    return {
+      apiKey: "placeholder-api-key-for-initial-load",
+      authDomain: "placeholder-project.firebaseapp.com",
+      projectId: "placeholder-project",
+      storageBucket: "placeholder-project.appspot.com",
+      messagingSenderId: "1234567890",
+      appId: "1:1234567890:web:1234567890"
+    };
+  }
+
+  return envConfig;
 };
 
 const firebaseConfig = getFirebaseConfig();
